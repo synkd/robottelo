@@ -1085,7 +1085,6 @@ def test_external_logout_rhsso(enable_external_auth_rhsso, session):
         update_rhsso_settings_in_satellite(revert=True)
 
 
-@upgrade
 @destructive
 def test_external_new_user_login_and_check_count(enable_external_auth_rhsso, session):
     """Verify the external new user login and verify the external user count

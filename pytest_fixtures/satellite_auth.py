@@ -1,5 +1,6 @@
 import copy
 
+import pytest
 from airgun.session import Session
 from nailgun import entities
 
@@ -9,13 +10,12 @@ from robottelo.constants import GROUP_MEMBERSHIP_MAPPER
 from robottelo.constants import LDAP_ATTR
 from robottelo.constants import LDAP_SERVER_TYPE
 from robottelo.datafactory import gen_string
-from robottelo.decorators import fixture
 from robottelo.rhsso_utils import create_mapper
 from robottelo.rhsso_utils import get_rhsso_client_id
 from robottelo.rhsso_utils import run_command
 
 
-@fixture(scope='function')
+@pytest.fixture(scope='function')
 def auth_source(ldap_data, module_org, module_loc):
     return entities.AuthSourceLDAP(
         onthefly_register=True,
@@ -37,7 +37,7 @@ def auth_source(ldap_data, module_org, module_loc):
     ).create()
 
 
-@fixture(scope='function')
+@pytest.fixture(scope='function')
 def auth_source_ipa(ipa_data, module_org, module_loc):
     return entities.AuthSourceLDAP(
         onthefly_register=True,
@@ -59,7 +59,7 @@ def auth_source_ipa(ipa_data, module_org, module_loc):
     ).create()
 
 
-@fixture()
+@pytest.fixture()
 def ldap_user_name(ldap_data, test_name):
     """Add LDAP user to satellite by logging in, return username to test and delete the user (if
     still exists) when test finishes.
@@ -74,7 +74,7 @@ def ldap_user_name(ldap_data, test_name):
         users[0].delete()
 
 
-@fixture()
+@pytest.fixture()
 def ldap_usergroup_name():
     """Return some random usergroup name, and attempt to delete such usergroup when test finishes.
     """
@@ -85,7 +85,7 @@ def ldap_usergroup_name():
         user_groups[0].delete()
 
 
-@fixture(scope='module')
+@pytest.fixture(scope='session')
 def ldap_auth_name():
     """Return some random ldap name, and attempt to delete all ldap when test starts.
     """
@@ -99,7 +99,7 @@ def ldap_auth_name():
     yield ldap_name
 
 
-@fixture(scope='module')
+@pytest.fixture(scope='session')
 def enroll_idm_and_configure_external_auth():
     """Enroll the Satellite6 Server to an IDM Server."""
     run_command(cmd='yum -y --disableplugin=foreman-protector install ipa-client ipa-admintools')
@@ -129,7 +129,7 @@ def enroll_idm_and_configure_external_auth():
     )
 
 
-@fixture(scope='module')
+@pytest.fixture(scope='session')
 def enroll_configure_rhsso_external_auth():
     """Enroll the Satellite6 Server to an RHSSO Server."""
     run_command(
@@ -155,7 +155,7 @@ def enroll_configure_rhsso_external_auth():
     run_command(cmd="systemctl restart httpd")
 
 
-@fixture(scope='module')
+@pytest.fixture(scope='session')
 def enable_external_auth_rhsso(enroll_configure_rhsso_external_auth):
     """register the satellite with RH-SSO Server for single sign-on"""
     client_id = get_rhsso_client_id()
