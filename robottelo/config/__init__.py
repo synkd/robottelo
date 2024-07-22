@@ -21,6 +21,15 @@ def get_settings():
 
     :return: A validated Lazy settings object
     """
+    CORE_VALIDATORS = {
+        k: VALIDATORS.get(k)
+        for k in [
+            'jira',
+            'robottelo',
+            'server',
+            'supportability',
+        ]
+    }
     try:
         if builtins.__sphinx_build__:
             settings = None
@@ -35,7 +44,7 @@ def get_settings():
             lowercase_read=True,
             load_dotenv=True,
         )
-        settings.validators.register(**VALIDATORS)
+        settings.validators.register(**CORE_VALIDATORS)
 
         try:
             settings.validators.validate()

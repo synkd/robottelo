@@ -34,6 +34,7 @@ pytest_plugins = [
     'pytest_fixtures.core.upgrade',
     'pytest_fixtures.core.xdist',
     'pytest_fixtures.core.ui',
+    'pytest_fixtures.core.validation',
     # Component Fixtures
     'pytest_fixtures.component.acs',
     'pytest_fixtures.component.activationkey',

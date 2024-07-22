@@ -28,6 +28,11 @@ from robottelo.constants import DEFAULT_SUBSCRIPTION_NAME, PRDS, REPOS, REPOSET
 pytestmark = [pytest.mark.run_in_one_thread]
 
 
+@pytest.fixture(scope='module', autouse=True)
+def validate_component_settings(subscription_validators):
+    return subscription_validators
+
+
 @pytest.fixture(scope='module')
 def rh_repo(module_sca_manifest_org, module_target_sat):
     rh_repo_id = module_target_sat.api_factory.enable_rhrepo_and_fetchid(
