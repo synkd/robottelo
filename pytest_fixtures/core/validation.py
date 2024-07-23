@@ -1,32 +1,41 @@
+import dynaconf
 import pytest
 
-from dynaconf import LazySettings
-from dynaconf.validator import ValidationError
+from robottelo.config import settings
 from robottelo.config.validators import VALIDATORS
 from robottelo.logging import logger
 
 
-settings = LazySettings(
-    envvar_prefix="ROBOTTELO",
-    core_loaders=["YAML"],
-    settings_file="settings.yaml",
-    preload=["conf/*.yaml"],
-    includes=["settings.local.yaml", ".secrets.yaml", ".secrets_*.yaml"],
-    envless_mode=True,
-    lowercase_read=True,
-    load_dotenv=True,
-)
-
-@pytest.fixture(scope='session')
-def subscription_validators():
-    SUBSCRIPTION_VALIDATORS = { k: VALIDATORS.get(k) for k in ['broker', 'content_host', 'libvirt', 'subscription',]}
-    settings.validators.register(**SUBSCRIPTION_VALIDATORS)
-
+def _try_validation(validator):
     try:
-        settings.validators.validate()
-    except ValidationError as err:
+        settings.validators.validate(only=validator)
+    except dynaconf.ValidationError as err:
         if settings.robottelo.settings.get('ignore_validation_errors'):
-            logger.warning(f'Dynaconf validation failed with\n{err}')
+            logger.warning(f'Dynaconf validation failed with`n{err}')
         else:
             raise err
     return settings
+
+
+@pytest.fixture(scope='session')
+def validate_broker():
+    settings.validators.register(**{'broker': VALIDATORS.get('broker')})
+    _try_validation(['broker'])
+
+
+@pytest.fixture(scope='session')
+def validate_contenthost():
+    settings.validators.register(**{'content_host': VALIDATORS.get('content_host')})
+    _try_validation(['content_host'])
+
+
+@pytest.fixture(scope='session')
+def validate_libvirt():
+    settings.validators.register(**{'libvirt': VALIDATORS.get('libvirt')})
+    _try_validation(['libvirt'])
+
+
+@pytest.fixture(scope='session')
+def validate_subscription():
+    settings.validators.register(**{'subscription': VALIDATORS.get('subscription')})
+    _try_validation(['subscription'])

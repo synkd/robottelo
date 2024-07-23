@@ -29,8 +29,10 @@ pytestmark = [pytest.mark.run_in_one_thread]
 
 
 @pytest.fixture(scope='module', autouse=True)
-def validate_component_settings(subscription_validators):
-    return subscription_validators
+def validate_component_settings(
+    validate_broker, validate_contenthost, validate_libvirt, validate_subscription
+):
+    pass
 
 
 @pytest.fixture(scope='module')
