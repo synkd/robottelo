@@ -4216,6 +4216,8 @@ def test_assign_different_cv_from_same_env(
 
     :verifies: SAT-25846
     """
+    import epdb
+    epdb.serve(port=8000)
     # Create activation key and register host
     ak = module_target_sat.api.ActivationKey(
         organization=module_org.id,
@@ -4240,7 +4242,6 @@ def test_assign_different_cv_from_same_env(
     cv_version = cv.read().version[0]
     cv_version.promote(data={'environment_ids': module_lce.id})
     cv = cv.read()
-
     # In a UI session, use the CV environment modal to change the host's CV to the new CV
     with module_target_sat.ui_session() as session:
         session.organization.select(module_org.name)
