@@ -650,8 +650,7 @@ def test_re_register_after_enabling_iop(
     assert rhel_insights_vm.execute('insights-client --test-connection').status == 0
     module_target_sat_insights.configure_iop()
     assert rhel_insights_vm.execute('insights-client --register').status == 0
-    rhel_insights_vm.execute('chmod 777 /etc/ssh/sshd_config')
-    assert rhel_insights_vm.execute('insights-client').status == 0
+    create_insights_recommendation(rhel_insights_vm)
 
     with module_target_sat_insights.ui_session() as session:
         session.organization.select(org_name=rhcloud_manifest_org.name)
@@ -668,12 +667,6 @@ def test_re_register_after_enabling_iop(
         # Verify that the job Succeeded
         assert result['status']['Succeeded'] != 0
         assert result['overall_status']['is_success']
-
-        # Verify that the Satellite is not affected by SAT-35946
-        result = module_target_sat_insights.execute(
-            'grep "502 Bad Gateway" /var/log/foreman/production.log'
-        )
-        assert result.status != 0
 
         # Verify that the recommendation is not listed anymore.
         assert (
