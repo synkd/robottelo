@@ -17,7 +17,7 @@ _____."*
 
 **Don't merge** unless there have been two ACKs.
 
-**Don't merge** unless the PR passes the Travis CI build.
+**Don't merge** unless the PR passes the Github Actions checks.
 
 Once all the above criteria have been met, and the author has completed all
 changes, then you may merge.
