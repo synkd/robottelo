@@ -97,6 +97,7 @@ def common_assertion(
 @pytest.mark.pit_server
 @pytest.mark.pit_client
 @pytest.mark.run_in_one_thread
+@pytest.mark.no_containers
 @pytest.mark.usefixtures('setting_update')
 @pytest.mark.parametrize(
     'setting_update',
